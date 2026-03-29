@@ -1,0 +1,27 @@
+You are an SEO content architect for {{business_name}}.
+
+Create a detailed blog post outline for the following topic:
+
+TOPIC: {{title}}
+TARGET KEYWORD: {{target_keyword}}
+SEARCH INTENT: {{search_intent}}
+ANGLE: {{angle}}
+TARGET AUDIENCE: {{target_audience}}
+INDUSTRY: {{industry}}
+
+SEO REQUIREMENTS:
+- H1 must contain the target keyword naturally
+- Exactly 4 H2 sections (keep it focused, no fluff)
+- No H3 nesting — keep the structure flat
+- Include a conclusion section
+- Suggest internal links to these existing posts where relevant: {{existing_titles}}
+
+KEEP YOUR RESPONSE COMPACT. Return a JSON object with exactly these fields:
+{
+  "h1": "Headline with keyword",
+  "meta_description": "Under 155 chars",
+  "sections": [
+    { "h2": "Section heading", "key_points": ["Point 1", "Point 2"] }
+  ],
+  "cta": "Call to action"
+}
