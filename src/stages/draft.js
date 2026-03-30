@@ -72,9 +72,11 @@ export async function generateDraft(context, topic, outline) {
 
   const wordCount = body.split(/\s+/).length;
 
+  const linkMatches = body.match(/\[([^\]]+)\]\(([^)]+)\)/g) || [];
   console.log(`  ✓ Title: ${frontmatter.title || topic.title}`);
   console.log(`  ✓ Slug: ${frontmatter.slug || '(will generate)'}`);
   console.log(`  ✓ Word count: ${wordCount}`);
+  console.log(`  ✓ Links in body: ${linkMatches.length}`);
 
   if (wordCount < WORD_COUNT_MIN * 0.7) {
     console.warn(`  ⚠ Draft is short (${wordCount} words, target ${WORD_COUNT_MIN}–${WORD_COUNT_MAX})`);

@@ -16,12 +16,23 @@ SEO REQUIREMENTS:
 - Include a conclusion section
 - Suggest internal links to these existing posts where relevant: {{existing_titles}}
 
+LINKING REQUIREMENTS:
+- Include 2-4 external authority links to reputable sources (e.g., studies, official docs, well-known publications) that support claims or add credibility. Use real, plausible URLs from authoritative domains (.gov, .edu, major publications, Apple support, etc.).
+- If existing posts are listed above, include 1-3 internal links to them using the format: {{domain}}/blog/slug-from-title
+- If no existing posts are listed, skip internal links.
+
 KEEP YOUR RESPONSE COMPACT. Return a JSON object with exactly these fields:
 {
   "h1": "Headline with keyword",
   "meta_description": "Under 155 chars",
   "sections": [
     { "h2": "Section heading", "key_points": ["Point 1", "Point 2"] }
+  ],
+  "internal_links": [
+    { "anchor_text": "descriptive text", "url": "full URL to existing post" }
+  ],
+  "external_links": [
+    { "anchor_text": "descriptive text", "url": "full URL to authority source", "context": "which section to place it in" }
   ],
   "cta": "Call to action"
 }

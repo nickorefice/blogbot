@@ -21,10 +21,17 @@ WRITING REQUIREMENTS:
 - Active voice, second person ("you") where appropriate
 - Include a compelling introduction (2-3 sentences) that hooks the reader
 - Include a clear conclusion with a call to action
-- Where the outline suggests internal links, include them as markdown links: [anchor text]({{domain}}/blog/slug)
 - NO fluff, filler phrases, or generic statements. Every sentence should add value.
 - NO "In today's world..." or "In this article, we will..." — start with substance.
 - Follow EVERY rule in the Blog Writing Guide provided in the system context, especially the Pre-Publish Checklist and AI-Specific Content Guidelines. Never use any phrase from the "Phrases to never use" list.
+
+LINKING REQUIREMENTS (MANDATORY):
+- The outline JSON contains "internal_links" and "external_links" arrays. You MUST include ALL of them in the post body as markdown links: [anchor text](url)
+- Place each link naturally within the relevant section's paragraph text — NOT as a bare list of URLs
+- Internal links: weave into sentences where they contextually fit (e.g., "If you're also dealing with shared albums, check out our guide on [organizing photos after a breakup](https://example.com/blog/organize-photos-breakup).")
+- External links: use to back up claims or add authority (e.g., "According to [Apple's support page](https://support.apple.com/...), you can recover recently deleted photos within 30 days.")
+- Every post MUST have at least 2 external authority links, even if the outline omits them. Add links to relevant .gov, .edu, or major publication sources that support the post's claims.
+- Do NOT group links at the end. Distribute them throughout the body.
 
 OUTPUT FORMAT:
 Return the post as markdown. Start with YAML frontmatter, then the full post body:

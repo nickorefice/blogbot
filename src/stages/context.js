@@ -35,7 +35,7 @@ export async function loadClientContext(clientId) {
     throw new Error(`Failed to fetch existing posts: ${postsError.message}`);
   }
 
-  const existingTitles = (existingPosts || []).map(p => p.title);
+  const existingTitles = (existingPosts || []).map(p => `${p.title} (slug: ${p.slug})`);
   const existingSlugs = (existingPosts || []).map(p => p.slug);
 
   // Check for recently rejected posts — agent can use rejection notes as feedback
