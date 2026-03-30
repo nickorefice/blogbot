@@ -22,13 +22,29 @@ function slugify(text) {
 
 /**
  * Ensure slug is unique for this client.
+ * Checks both in-memory list and DB to handle race conditions.
  * Appends -2, -3, etc. if needed.
  */
 async function ensureUniqueSlug(clientId, slug, existingSlugs) {
   let candidate = slug;
   let counter = 2;
 
+  // First pass: check in-memory list
   while (existingSlugs.includes(candidate)) {
+    candidate = `${slug}-${counter}`;
+    counter++;
+  }
+
+  // Second pass: verify against DB (handles race conditions)
+  while (true) {
+    const { data } = await supabase
+      .from('posts')
+      .select('id')
+      .eq('client_id', clientId)
+      .eq('slug', candidate)
+      .limit(1);
+
+    if (!data || data.length === 0) break;
     candidate = `${slug}-${counter}`;
     counter++;
   }
