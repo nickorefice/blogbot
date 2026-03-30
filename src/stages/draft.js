@@ -49,6 +49,22 @@ export async function generateDraft(context, topic, outline) {
 
   const { profile } = context;
 
+  // Build explicit links list so the model can't miss them
+  const internalLinks = (outline.internal_links || [])
+    .map(l => `- [${l.anchor_text}](${l.url})`)
+    .join('\n');
+  const externalLinks = (outline.external_links || [])
+    .map(l => `- [${l.anchor_text}](${l.url}) — use in: ${l.context || 'any relevant section'}`)
+    .join('\n');
+  const linksBlock = [
+    'LINKS YOU MUST INCLUDE (weave each one naturally into a paragraph):',
+    internalLinks ? `Internal links:\n${internalLinks}` : '',
+    externalLinks ? `External links:\n${externalLinks}` : '',
+    !internalLinks && !externalLinks
+      ? 'No links provided — you MUST still add at least 2 external authority links to reputable sources (.gov, .edu, Apple support, major publications).'
+      : '',
+  ].filter(Boolean).join('\n\n');
+
   const prompt = PROMPT_TEMPLATE
     .replace('{{business_name}}', profile.business_name)
     .replace('{{industry}}', profile.industry || 'general')
@@ -60,7 +76,8 @@ export async function generateDraft(context, topic, outline) {
     .replace('{{word_count_min}}', String(WORD_COUNT_MIN))
     .replace('{{word_count_max}}', String(WORD_COUNT_MAX))
     .replace('{{domain}}', profile.domain || 'example.com')
-    .replace('{{meta_description}}', outline.meta_description || '');
+    .replace('{{meta_description}}', outline.meta_description || '')
+    + '\n\n' + linksBlock;
 
   const systemPrompt =
     `You are a professional SEO blog writer for ${profile.business_name}. ` +
@@ -77,6 +94,9 @@ export async function generateDraft(context, topic, outline) {
   console.log(`  ✓ Slug: ${frontmatter.slug || '(will generate)'}`);
   console.log(`  ✓ Word count: ${wordCount}`);
   console.log(`  ✓ Links in body: ${linkMatches.length}`);
+  if (linkMatches.length === 0) {
+    console.warn(`  ⚠ WARNING: Draft has zero links — the model ignored linking requirements`);
+  }
 
   if (wordCount < WORD_COUNT_MIN * 0.7) {
     console.warn(`  ⚠ Draft is short (${wordCount} words, target ${WORD_COUNT_MIN}–${WORD_COUNT_MAX})`);
