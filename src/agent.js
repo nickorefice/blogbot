@@ -15,6 +15,7 @@ import { selectTopic } from './stages/topic.js';
 import { generateOutline } from './stages/outline.js';
 import { generateDraft } from './stages/draft.js';
 import { queuePost } from './stages/queue.js';
+import { publish } from './stages/publish.js';
 import { supabase } from './supabase.js';
 
 // ─── CLI args ───────────────────────────────────────────
@@ -236,11 +237,41 @@ async function startDaemon() {
       }
     });
 
+  // Subscribe to approvals → publish
+  const approvalChannel = supabase
+    .channel('posts-approvals')
+    .on(
+      'postgres_changes',
+      {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'posts',
+        filter: 'status=eq.approved'
+      },
+      async (payload) => {
+        const post = payload.new;
+        // Only act on transitions INTO approved (not updates within approved)
+        if (payload.old?.status === 'approved') return;
+        console.log(`\n[daemon] post ${post.id} approved — publishing`);
+        try {
+          await publish(post.id);
+        } catch (err) {
+          console.error('[daemon] publish crashed:', err);
+        }
+      }
+    )
+    .subscribe((status) => {
+      if (status === 'SUBSCRIBED') {
+        console.log('📡 Subscribed to posts.status=approved events\n');
+      }
+    });
+
   // Graceful shutdown
   process.on('SIGINT', async () => {
     console.log('\n\nShutting down daemon...');
     await supabase.removeChannel(channel);
-    console.log('Realtime subscription removed. Goodbye.');
+    await supabase.removeChannel(approvalChannel);
+    console.log('Realtime subscriptions removed. Goodbye.');
     process.exit(0);
   });
 

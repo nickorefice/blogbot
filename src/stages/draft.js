@@ -65,6 +65,10 @@ export async function generateDraft(context, topic, outline) {
       : '',
   ].filter(Boolean).join('\n\n');
 
+  const frontmatterTemplate = profile.frontmatter_template
+    ? profile.frontmatter_template
+    : '(none)';
+
   const prompt = PROMPT_TEMPLATE
     .replace('{{business_name}}', profile.business_name)
     .replace('{{industry}}', profile.industry || 'general')
@@ -77,6 +81,7 @@ export async function generateDraft(context, topic, outline) {
     .replace('{{word_count_max}}', String(WORD_COUNT_MAX))
     .replace('{{domain}}', profile.domain || 'example.com')
     .replace('{{meta_description}}', outline.meta_description || '')
+    .replace('{{frontmatter_template}}', frontmatterTemplate)
     + '\n\n' + linksBlock;
 
   const systemPrompt =

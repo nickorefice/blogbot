@@ -33,9 +33,16 @@ LINKING REQUIREMENTS (MANDATORY):
 - Every post MUST have at least 2 external authority links, even if the outline omits them. Add links to relevant .gov, .edu, or major publication sources that support the post's claims.
 - Do NOT group links at the end. Distribute them throughout the body.
 
+FRONTMATTER SHAPE:
+
+{{frontmatter_template}}
+
+If a frontmatter template is shown above (not the literal string "(none)"), your output MUST match that exact shape — same keys, same ordering, same types. Fill in each value appropriately for the article. If "(none)" is shown, use the standard frontmatter below.
+
 OUTPUT FORMAT:
 Return the post as markdown. Start with YAML frontmatter, then the full post body:
 
+Standard frontmatter (only if no client-specific template above):
 ---
 title: "Post title"
 meta_title: "SEO title tag (60 chars max, contains keyword)"
